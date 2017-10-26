@@ -11,12 +11,6 @@ public class Main extends Application {
         stage.setTitle("TicTacToe");
         stage.setScene(new Scene(layout, 800, 768));
         stage.show();
-
-        // Turn off resizing by setting explicite max and min dimensions
-        stage.setMaxWidth(800);
-        stage.setMaxHeight(768);
-        stage.setMinWidth(800);
-        stage.setMinHeight(768);
     }
 
 

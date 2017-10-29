@@ -9,14 +9,14 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         AnchorPane layout = FXMLLoader.load(getClass().getResource("gui.fxml"));
         stage.setTitle("TicTacToe");
-        stage.setScene(new Scene(layout, 800, 768));
+        stage.setScene(new Scene(layout, 810, 780));
         stage.show();
 
         // Fix window size - no resizing possible
-        stage.setMinHeight(768);
-        stage.setMaxHeight(768);
-        stage.setMinWidth(800);
-        stage.setMaxWidth(800);
+        stage.setMinHeight(780);
+        stage.setMaxHeight(780);
+        stage.setMinWidth(810);
+        stage.setMaxWidth(810);
     }
 
 

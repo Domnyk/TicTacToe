@@ -13,7 +13,7 @@
 
 <AnchorPane minHeight="780.0" minWidth="810.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <GridPane alignment="TOP_CENTER" disable="true" gridLinesVisible="true" layoutX="150.0" layoutY="94.0" maxWidth="450.0" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: grey;" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="90.0">
+      <GridPane fx:id="gameGrid" alignment="TOP_CENTER" disable="true" gridLinesVisible="true" layoutX="175.0" layoutY="92.0" maxWidth="450.0" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: grey;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="185.0" AnchorPane.topAnchor="92.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -69,7 +69,7 @@
       </Label>
       <TextField fx:id="firstSiTreeDepthTextField" layoutX="610.0" layoutY="596.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" />
       <TextField fx:id="secondSITreeDepthTextField" disable="true" layoutX="610.0" layoutY="630.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" AnchorPane.topAnchor="630.0" />
-      <Label alignment="CENTER" layoutY="1.0" prefHeight="91.0" prefWidth="800.0" text="Waiting for game to start">
+      <Label fx:id="statusLabel" alignment="CENTER" layoutY="1.0" prefHeight="91.0" prefWidth="800.0" text="Waiting for game to start">
          <font>
             <Font size="45.0" />
          </font>

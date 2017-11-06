@@ -23,4 +23,12 @@ public class Coordinates  {
     public Integer getCol() {
         return col;
     }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
+    public void setCol(Integer col) {
+        this.col = col;
+    }
 }

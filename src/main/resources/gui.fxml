@@ -34,7 +34,7 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <RadioButton fx:id="siVsHumanRadioButton" layoutX="147.0" layoutY="598.0" mnemonicParsing="false" onAction="#handleSiVsHumanRadioButtonClicked" selected="true" text="SI vs human" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="598.0">
+      <RadioButton fx:id="aiVsHumanRadioButton" layoutX="147.0" layoutY="598.0" mnemonicParsing="false" onAction="#handleAiVsHumanRadioButtonClicked" selected="true" text="AI vs human" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="598.0">
          <toggleGroup>
             <ToggleGroup fx:id="gameType" />
          </toggleGroup>
@@ -42,7 +42,7 @@
             <Font size="18.0" />
          </font>
       </RadioButton>
-      <RadioButton fx:id="siVsSiRadioButton" layoutX="147.0" layoutY="631.0" mnemonicParsing="false" onAction="#handleSiVsSiRadioButtonClicked" text="SI vs SI" toggleGroup="$gameType" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="631.0">
+      <RadioButton fx:id="aiVsAiRadioButton" layoutX="147.0" layoutY="631.0" mnemonicParsing="false" onAction="#handleAiVsAiRadioButtonClicked" text="AI vs AI" toggleGroup="$gameType" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="631.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -57,18 +57,18 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Label fx:id="firstSiTreeDepthLabel" layoutX="452.0" layoutY="598.0" text="1st SI tree depth">
+      <Label fx:id="firstAiTreeDepthLabel" layoutX="452.0" layoutY="598.0" text="1st SI tree depth">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="secondSITreeDepthLabel" disable="true" layoutX="452.0" layoutY="632.0" text="2nd SI tree depth">
+      <Label fx:id="secondAiTreeDepthLabel" disable="true" layoutX="452.0" layoutY="632.0" text="2nd SI tree depth">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="firstSiTreeDepthTextField" layoutX="610.0" layoutY="596.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" />
-      <TextField fx:id="secondSITreeDepthTextField" disable="true" layoutX="610.0" layoutY="630.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" AnchorPane.topAnchor="630.0" />
+      <TextField fx:id="firstAiTreeDepthTextField" layoutX="610.0" layoutY="596.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" />
+      <TextField fx:id="secondAiTreeDepthTextField" disable="true" layoutX="610.0" layoutY="630.0" maxWidth="40.0" minWidth="40.0" prefHeight="25.0" prefWidth="40.0" AnchorPane.topAnchor="630.0" />
       <Label fx:id="statusLabel" alignment="CENTER" layoutY="1.0" prefHeight="91.0" prefWidth="800.0" text="Waiting for game to start">
          <font>
             <Font size="45.0" />

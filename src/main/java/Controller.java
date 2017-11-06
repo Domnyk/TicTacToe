@@ -1,8 +1,10 @@
 import helpers.EndGameHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -16,22 +18,22 @@ public class Controller {
     private static int NUM_OF_PLAYERS = 2;
 
     @FXML
-    private RadioButton siVsHumanRadioButton;
+    private RadioButton aiVsHumanRadioButton;
 
     @FXML
-    private RadioButton siVsSiRadioButton;
+    private RadioButton aiVsAiRadioButton;
 
     @FXML
-    private Label firstSiTreeDepthLabel;
+    private Label firstAiTreeDepthLabel;
 
     @FXML
-    private TextField firstSiTreeDepthTextField;
+    private TextField firstAiTreeDepthTextField;
 
     @FXML
-    private Label secondSITreeDepthLabel;
+    private Label secondAiTreeDepthLabel;
 
     @FXML
-    private TextField secondSITreeDepthTextField;
+    private TextField secondAiTreeDepthTextField;
 
     @FXML
     private Button startGameButton;
@@ -51,6 +53,10 @@ public class Controller {
     private Grid grid;
 
     private GameState gameState;
+
+    private GameType gameType;
+
+    private boolean isHumanVsAIGameType;
 
     private StringProperty statusLabelProperty = new SimpleStringProperty();
 
@@ -131,6 +137,12 @@ public class Controller {
         // If not win - change currentPlayer
         currentPlayerNumber = (currentPlayerNumber + 1) % 2;
         currentPlayer = players[currentPlayerNumber];
+
+        // If new current player is AI - make his move
+        if (!currentPlayer.isHuman()) {
+            makeAIMove();
+        }
+
     }
 
     private Button createGridBtn() {
@@ -149,16 +161,16 @@ public class Controller {
 
     // When SI vs Human radio button is selected then there is no need for second text field to be active
     @FXML
-    private void handleSiVsHumanRadioButtonClicked() {
-        secondSITreeDepthLabel.setDisable(true);
-        secondSITreeDepthTextField.setDisable(true);
+    private void handleAiVsHumanRadioButtonClicked() {
+        secondAiTreeDepthLabel.setDisable(true);
+        secondAiTreeDepthTextField.setDisable(true);
     }
 
     // When SI vs SI radio button is selected then second text field is active
     @FXML
-    private void handleSiVsSiRadioButtonClicked() {
-        secondSITreeDepthLabel.setDisable(false);
-        secondSITreeDepthTextField.setDisable(false);
+    private void handleAiVsAiRadioButtonClicked() {
+        secondAiTreeDepthLabel.setDisable(false);
+        secondAiTreeDepthTextField.setDisable(false);
     }
 
     // Actually start the game but also disables all controls
@@ -169,17 +181,31 @@ public class Controller {
         // Enable grid -> enable buttons
         gameGrid.setDisable(false);
 
+        // Set proper flag for game type
+        // At least one radio button has to be always selected
+        // So, if not AI vs Human then AI vs AI
+        isHumanVsAIGameType = aiVsHumanRadioButton.isSelected();
+
         startGame();
     }
 
     private void disableAllControls() {
-        siVsHumanRadioButton.setDisable(true);
-        siVsSiRadioButton.setDisable(true);
+        aiVsHumanRadioButton.setDisable(true);
+        aiVsAiRadioButton.setDisable(true);
         startGameButton.setDisable(true);
-        firstSiTreeDepthLabel.setDisable(true);
-        firstSiTreeDepthTextField.setDisable(true);
-        secondSITreeDepthLabel.setDisable(true);
-        secondSITreeDepthTextField.setDisable(true);
+        firstAiTreeDepthLabel.setDisable(true);
+        firstAiTreeDepthTextField.setDisable(true);
+        secondAiTreeDepthLabel.setDisable(true);
+        secondAiTreeDepthTextField.setDisable(true);
+    }
+
+    private void makeAIMove() {
+        Coordinates aiCoordinates = ((ArtificialPlayer) currentPlayer).makeMove(grid);
+        int row = aiCoordinates.getRow();
+        int col = aiCoordinates.getCol();
+
+        // For some reason getChildren().get(0) is a group element. That's why +1 is needed
+        ((Button)gameGrid.getChildren().get(row*5+col+1)).fire();
     }
 
     private void startGame() {
@@ -188,8 +214,19 @@ public class Controller {
 
        // Create players' models
        players = new Player[NUM_OF_PLAYERS];
-       players[0] = new Player(Mark.X);
-       players[1] = new Player(Mark.O);
+
+       if ( isHumanVsAIGameType ) {
+           int firstAiTreeDepth = Integer.parseInt(firstAiTreeDepthTextField.getText());
+
+           players[0] = new HumanPlayer(Mark.O);
+           players[1] = new ArtificialPlayer(Mark.X, firstAiTreeDepth);
+       } else {
+           int firstAiTreeDepth = Integer.parseInt(firstAiTreeDepthTextField.getText());
+           int secondAiTreeDepth = Integer.parseInt(secondAiTreeDepthTextField.getText());
+
+           players[0] = new ArtificialPlayer(Mark.O, firstAiTreeDepth);
+           players[1] = new ArtificialPlayer(Mark.X, secondAiTreeDepth);
+       }
 
        // Choose starting player
        GameState newGameState;
@@ -202,5 +239,10 @@ public class Controller {
        }
 
        updateGameState(newGameState);
+
+       // If AI moves first we need to make it to move
+       if (!currentPlayer.isHuman()) {
+           makeAIMove();
+       }
     }
 }

@@ -49,8 +49,6 @@ public class EndGameHelper {
         // Check 2nd diagonal
         for(int i = 0; i < 5; ++i) {
             if (grid.getFieldState(4-i, i) == currentPlayerFieldState) {
-                System.out.println(4-i);
-
                 ++sum;
             }
         }

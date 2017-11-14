@@ -17,16 +17,6 @@ public class Grid {
         }
     }
 
-    public void printGrid() {
-        System.out.println("--------");
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; j++) {
-                System.out.printf("%s ", grid[i][j]);
-            }
-            System.out.print("\n");
-        }
-    }
-
     public int getNumOfFieldsTaken() {
         return numOfFieldsTaken;
     }
@@ -56,14 +46,6 @@ public class Grid {
 
         grid[row][col] = newFieldState;
         ++numOfFieldsTaken;
-    }
-
-    public void updateGridWithMark(Coordinates coordinates, FieldState newFieldState) {
-        FieldState fs = getFieldState(coordinates);
-
-        if (fs == FieldState.EMPTY) {
-            setFieldState(coordinates, newFieldState);
-        }
     }
 
     @Override

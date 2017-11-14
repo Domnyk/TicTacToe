@@ -16,12 +16,11 @@ public class ArtificialPlayer extends Player implements ArtificialInteligence {
         return false;
     }
 
+
     @Override
     public Coordinates makeMove(Grid grid) {
         int row = 0;
         int col = 0;
-
-        //grid.printGrid();
 
         do {
             // System.out.println("Old values: " + row + " " + col);

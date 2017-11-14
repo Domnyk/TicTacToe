@@ -1,21 +1,25 @@
 import helpers.EndGameHelper;
+import helpers.GridHelper;
+import helpers.ScoreHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import models.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
 public class Controller {
     private static int NUM_OF_PLAYERS = 2;
+
+    private static final Logger logger = LogManager.getLogger("Application");
 
     @FXML
     private RadioButton aiVsHumanRadioButton;
@@ -54,8 +58,6 @@ public class Controller {
 
     private GameState gameState;
 
-    private GameType gameType;
-
     private boolean isHumanVsAIGameType;
 
     private StringProperty statusLabelProperty = new SimpleStringProperty();
@@ -89,6 +91,8 @@ public class Controller {
     }
 
     private void handleGridButtonClicked(Event event) {
+        logger.info("MOVE HAS BEEN MADE");
+
         Button source = (Button) event.getSource();
 
         int col = GridPane.getColumnIndex(source);
@@ -111,8 +115,10 @@ public class Controller {
             // Update game status
             if (gameState == GameState.X_IS_MAKING_MOVE) {
                 updateGameState(GameState.X_WIN);
+                logger.info("Player X has won");
             } else {
                 updateGameState(GameState.O_WIN);
+                logger.info("Player O has won");
             }
 
             // Disable grid
@@ -126,6 +132,12 @@ public class Controller {
             updateGameState(GameState.DRAW);
             return;
         }
+
+        // If not win - show move score
+        logger.info("Player " + currentPlayer.getPlayersMark() + " has made a move in [" + coordinates.getRow() + ", " + coordinates.getCol() + "]");
+        logger.info("Score of a move: " + ScoreHelper.calculateScore(grid, currentPlayer));
+        logger.info("State of grid: ");
+        GridHelper.printGrid(grid);
 
         // If not win or draw - set newGameStatus
         if (gameState == GameState.X_IS_MAKING_MOVE) {
@@ -142,7 +154,6 @@ public class Controller {
         if (!currentPlayer.isHuman()) {
             makeAIMove();
         }
-
     }
 
     private Button createGridBtn() {
@@ -187,6 +198,7 @@ public class Controller {
         isHumanVsAIGameType = aiVsHumanRadioButton.isSelected();
 
         startGame();
+        logger.info("Game has been started");
     }
 
     private void disableAllControls() {
@@ -200,7 +212,8 @@ public class Controller {
     }
 
     private void makeAIMove() {
-        Coordinates aiCoordinates = ((ArtificialPlayer) currentPlayer).makeMove(grid);
+        ArtificialPlayer artificialPlayer = ((ArtificialPlayer ) currentPlayer);
+        Coordinates aiCoordinates = artificialPlayer.makeMove(grid);
         int row = aiCoordinates.getRow();
         int col = aiCoordinates.getCol();
 

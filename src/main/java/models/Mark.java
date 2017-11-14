@@ -14,4 +14,20 @@ public enum Mark {
     public String toString() {
         return this.value;
     }
+
+    public FieldState toFieldState () {
+        if (this.value.equals("X")) {
+            return FieldState.X;
+        } else {
+            return FieldState.O;
+        }
+    }
+
+    public Mark getOpositeMark() {
+        if (this.value.equals("X")) {
+            return O;
+        } else {
+            return X;
+        }
+    }
 }

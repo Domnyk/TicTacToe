@@ -18,7 +18,7 @@ public class ArtificialPlayer extends Player implements ArtificialInteligence {
 
 
     @Override
-    public Coordinates makeMove(Grid grid) {
+    public Coordinates makeMove(Board board) {
         int row = 0;
         int col = 0;
 
@@ -28,7 +28,7 @@ public class ArtificialPlayer extends Player implements ArtificialInteligence {
             row = new Random().nextInt(5);
             col = new Random().nextInt(5);
 
-        } while (grid.getFieldState(row, col) == FieldState.X || grid.getFieldState(row, col) == FieldState.O);
+        } while (board.getFieldState(row, col) == FieldState.X || board.getFieldState(row, col) == FieldState.O);
 
         // System.out.println("New Coordinates: ");
         // System.out.printf("%d %d\n", row, col);

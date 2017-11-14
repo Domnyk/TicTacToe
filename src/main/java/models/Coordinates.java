@@ -9,12 +9,12 @@ public class Coordinates  {
         this.col = col;
     }
 
-    public Coordinates(Coordinates coordinates) {
+    /* public Coordinates(Coordinates coordinates) {
         if (coordinates == null) return;
 
         this.row = coordinates.getRow();
         this.col = coordinates.getCol();
-    }
+    } */
 
     public Integer getRow() {
         return row;

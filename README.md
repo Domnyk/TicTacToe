@@ -1,7 +1,7 @@
 ## TicTacToe
 
 ### Description
-Tic tac toe game on 5x5 grid. Written in Java using JavaFX for GUI and minimax algorithm for computer moves
+Tic tac toe game on 5x5 board. Written in Java using JavaFX for GUI and minimax algorithm for computer moves
 
   
 ### How to build

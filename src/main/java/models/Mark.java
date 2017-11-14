@@ -23,11 +23,11 @@ public enum Mark {
         }
     }
 
-    public Mark getOpositeMark() {
+    /* public Mark getOpositeMark() {
         if (this.value.equals("X")) {
             return O;
         } else {
             return X;
         }
-    }
+    } */
 }

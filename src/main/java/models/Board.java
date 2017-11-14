@@ -2,11 +2,11 @@ package models;
 
 import java.util.Arrays;
 
-public class Grid {
+public class Board {
     private FieldState[][] grid;
     private int numOfFieldsTaken;
 
-    public Grid() {
+    public Board() {
         grid = new FieldState[5][5];
         numOfFieldsTaken = 0;
 
@@ -25,16 +25,16 @@ public class Grid {
         return grid;
     }
 
-    public void setGrid(FieldState[][] grid) {
+    /* public void setGrid(FieldState[][] grid) {
         this.grid = grid;
-    }
+    } */
 
-    public FieldState getFieldState(Coordinates coordinates) {
+    /* public FieldState getFieldState(Coordinates coordinates) {
         int row = coordinates.getRow();
         int col = coordinates.getCol();
 
         return grid[row][col];
-    }
+    } */
 
     public FieldState getFieldState(int row, int col) {
         return grid[row][col];
@@ -53,8 +53,8 @@ public class Grid {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Grid grid = (Grid) o;
+        Board board = (Board) o;
 
-        return Arrays.deepEquals(getGrid(), grid.getGrid());
+        return Arrays.deepEquals(getGrid(), board.getGrid());
     }
 }

@@ -54,7 +54,7 @@ public class Controller {
 
     private int currentPlayerNumber;
 
-    private Grid grid;
+    private Board board;
 
     private GameState gameState;
 
@@ -107,10 +107,10 @@ public class Controller {
 
         // Update model - set mark on proper position
         FieldState newFieldState = FieldState.valueOf(currentPlayer.getPlayersMark().toString());
-        grid.setFieldState(coordinates, newFieldState);
+        board.setFieldState(coordinates, newFieldState);
 
         // Check for win
-        if (EndGameHelper.hasCurrentPlayerWon(grid, coordinates, currentPlayer)) {
+        if (EndGameHelper.hasCurrentPlayerWon(board, coordinates, currentPlayer)) {
 
             // Update game status
             if (gameState == GameState.X_IS_MAKING_MOVE) {
@@ -121,23 +121,23 @@ public class Controller {
                 logger.info("Player O has won");
             }
 
-            // Disable grid
+            // Disable board
             gameGrid.setDisable(true);
 
             return;
         }
 
         // If not win - maybe draw
-        if (EndGameHelper.isDraw(grid)) {
+        if (EndGameHelper.isDraw(board)) {
             updateGameState(GameState.DRAW);
             return;
         }
 
         // If not win - show move score
         logger.info("Player " + currentPlayer.getPlayersMark() + " has made a move in [" + coordinates.getRow() + ", " + coordinates.getCol() + "]");
-        logger.info("Score of a move: " + ScoreHelper.calculateScore(grid, currentPlayer));
-        logger.info("State of grid: ");
-        GridHelper.printGrid(grid);
+        logger.info("Score of a move: " + ScoreHelper.calculateScore(board, currentPlayer));
+        logger.info("State of board: ");
+        GridHelper.printGrid(board);
 
         // If not win or draw - set newGameStatus
         if (gameState == GameState.X_IS_MAKING_MOVE) {
@@ -189,7 +189,7 @@ public class Controller {
     private void handleStartGameButtonClicked() {
         disableAllControls();
 
-        // Enable grid -> enable buttons
+        // Enable board -> enable buttons
         gameGrid.setDisable(false);
 
         // Set proper flag for game type
@@ -213,7 +213,7 @@ public class Controller {
 
     private void makeAIMove() {
         ArtificialPlayer artificialPlayer = ((ArtificialPlayer ) currentPlayer);
-        Coordinates aiCoordinates = artificialPlayer.makeMove(grid);
+        Coordinates aiCoordinates = artificialPlayer.makeMove(board);
         int row = aiCoordinates.getRow();
         int col = aiCoordinates.getCol();
 
@@ -222,8 +222,8 @@ public class Controller {
     }
 
     private void startGame() {
-       // Create grid
-       grid = new Grid();
+       // Create board
+       board = new Board();
 
        // Create players' models
        players = new Player[NUM_OF_PLAYERS];

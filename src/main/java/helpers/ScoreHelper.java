@@ -1,35 +1,35 @@
 package helpers;
 
+import models.Board;
 import models.Coordinates;
 import models.FieldState;
-import models.Grid;
 import models.Player;
 
 public class ScoreHelper {
-    public static int calculateScore(Grid grid, Player currentPlayer) {
+    public static int calculateScore(Board board, Player currentPlayer) {
         int score = 0;
 
         // Rows
         for (int i = 0; i < 5; ++i) {
-            score += calculateRowScore(grid, i, currentPlayer);
+            score += calculateRowScore(board, i, currentPlayer);
         }
 
         // Cols
         for (int i = 0; i < 5; ++i) {
-            score += calculateColScore(grid, i, currentPlayer);
+            score += calculateColScore(board, i, currentPlayer);
         }
 
         // First diagonal
-        score += calculateFirstDiagonalScore(grid, currentPlayer);
+        score += calculateFirstDiagonalScore(board, currentPlayer);
 
         // Second diagonal
-        score += calculateSecondDiagonalScore(grid, currentPlayer);
+        score += calculateSecondDiagonalScore(board, currentPlayer);
 
         return score;
     }
 
     // Only for vertical or horizontal line
-    private static int calculateLineScore(Grid grid, Coordinates beginCoordinates, Coordinates endCoordinates, Player currentPlayer) {
+    private static int calculateLineScore(Board board, Coordinates beginCoordinates, Coordinates endCoordinates, Player currentPlayer) {
         int score = 0;
         int currentPlayerNumOfFields = 0;
         int oppositePlayerNumOfFields = 0;
@@ -45,7 +45,7 @@ public class ScoreHelper {
         FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
 
         for(int i = beginCoordinates.getRow(), j = beginCoordinates.getCol(); i < 5 && j < 5; i += rowChange, j += colChange) {
-            FieldState fieldState = grid.getFieldState(i, j);
+            FieldState fieldState = board.getFieldState(i, j);
             if (fieldState == FieldState.EMPTY) {
                 continue;
             }
@@ -71,16 +71,16 @@ public class ScoreHelper {
         return score;
     }
 
-    private static int calculateRowScore(Grid grid, int rowNum, Player currentPlayer) {
-        return calculateLineScore(grid, new Coordinates(rowNum, 0), new Coordinates(rowNum, 4), currentPlayer);
+    private static int calculateRowScore(Board board, int rowNum, Player currentPlayer) {
+        return calculateLineScore(board, new Coordinates(rowNum, 0), new Coordinates(rowNum, 4), currentPlayer);
     }
 
-    private static int calculateColScore(Grid grid, int colNum, Player currentPlayer) {
-        return calculateLineScore(grid, new Coordinates(0, colNum), new Coordinates(4, colNum), currentPlayer);
+    private static int calculateColScore(Board board, int colNum, Player currentPlayer) {
+        return calculateLineScore(board, new Coordinates(0, colNum), new Coordinates(4, colNum), currentPlayer);
     }
 
     // First diagonal - top left to bottom right
-    private static int calculateFirstDiagonalScore(Grid grid, Player currentPlayer) {
+    private static int calculateFirstDiagonalScore(Board board, Player currentPlayer) {
         int score = 0;
         int currentPlayerNumOfFields = 0;
         int oppositePlayerNumOfFields = 0;
@@ -88,7 +88,7 @@ public class ScoreHelper {
         FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
 
         for(int i = 0; i < 5 ; i += 1) {
-            FieldState fieldState = grid.getFieldState(i, i);
+            FieldState fieldState = board.getFieldState(i, i);
             if (fieldState == FieldState.EMPTY) {
                 continue;
             }
@@ -115,7 +115,7 @@ public class ScoreHelper {
     }
 
     // First diagonal - top left to bottom right
-    private static int calculateSecondDiagonalScore(Grid grid, Player currentPlayer) {
+    private static int calculateSecondDiagonalScore(Board board, Player currentPlayer) {
         int score = 0;
         int currentPlayerNumOfFields = 0;
         int oppositePlayerNumOfFields = 0;
@@ -123,7 +123,7 @@ public class ScoreHelper {
         FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
 
         for(int i = 4; i >= 0 ; i -= 1) {
-            FieldState fieldState = grid.getFieldState(4-i, i);
+            FieldState fieldState = board.getFieldState(4-i, i);
             if (fieldState == FieldState.EMPTY) {
                 continue;
             }

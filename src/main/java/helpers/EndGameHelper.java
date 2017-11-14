@@ -1,19 +1,19 @@
 package helpers;
 
+import models.Board;
 import models.Coordinates;
 import models.FieldState;
-import models.Grid;
 import models.Player;
 
 public class EndGameHelper {
-    public static boolean hasCurrentPlayerWon(Grid grid, Coordinates coordinates, Player currentPlayer) {
+    public static boolean hasCurrentPlayerWon(Board board, Coordinates coordinates, Player currentPlayer) {
         FieldState currentPlayerFieldState = FieldState.valueOf(currentPlayer.getPlayersMark().toString());
         int sum = 0;
         int row = coordinates.getRow();
         int col = coordinates.getCol();
         // Check vertical line
         for (int i = 0; i < 5; ++i) {
-            if (grid.getFieldState(i, col) == currentPlayerFieldState) {
+            if (board.getFieldState(i, col) == currentPlayerFieldState) {
                 ++sum;
             }
         }
@@ -24,7 +24,7 @@ public class EndGameHelper {
         sum = 0;
         // Check horizontal line
         for (int i = 0; i < 5; ++i) {
-            if (grid.getFieldState(row, i) == currentPlayerFieldState) {
+            if (board.getFieldState(row, i) == currentPlayerFieldState) {
                 ++sum;
             }
         }
@@ -36,7 +36,7 @@ public class EndGameHelper {
         sum = 0;
         // Check 1st diagonal
         for(int i = 0; i < 5; ++i) {
-            if (grid.getFieldState(i, i) == currentPlayerFieldState) {
+            if (board.getFieldState(i, i) == currentPlayerFieldState) {
                 ++sum;
             }
         }
@@ -48,7 +48,7 @@ public class EndGameHelper {
         sum = 0;
         // Check 2nd diagonal
         for(int i = 0; i < 5; ++i) {
-            if (grid.getFieldState(4-i, i) == currentPlayerFieldState) {
+            if (board.getFieldState(4-i, i) == currentPlayerFieldState) {
                 ++sum;
             }
         }
@@ -57,7 +57,7 @@ public class EndGameHelper {
     };
 
     // This is run after hasCurrentPlayerWon - so if nobody won this tells if it is draw
-    public static boolean isDraw(Grid grid) {
-        return grid.getNumOfFieldsTaken() == 25;
+    public static boolean isDraw(Board board) {
+        return board.getNumOfFieldsTaken() == 25;
     }
 }

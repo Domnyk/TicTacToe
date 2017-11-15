@@ -6,33 +6,33 @@ import models.FieldState;
 import models.Player;
 
 public class ScoreHelper {
-    public static int calculateScore(Board board, Player currentPlayer) {
+    public static int calculateScore(Board board) {
         int score = 0;
 
         // Rows
         for (int i = 0; i < 5; ++i) {
-            score += calculateRowScore(board, i, currentPlayer);
+            score += calculateRowScore(board, i);
         }
 
         // Cols
         for (int i = 0; i < 5; ++i) {
-            score += calculateColScore(board, i, currentPlayer);
+            score += calculateColScore(board, i);
         }
 
         // First diagonal
-        score += calculateFirstDiagonalScore(board, currentPlayer);
+        score += calculateFirstDiagonalScore(board);
 
         // Second diagonal
-        score += calculateSecondDiagonalScore(board, currentPlayer);
+        score += calculateSecondDiagonalScore(board);
 
         return score;
     }
 
     // Only for vertical or horizontal line
-    private static int calculateLineScore(Board board, Coordinates beginCoordinates, Coordinates endCoordinates, Player currentPlayer) {
+    private static int calculateLineScore(Board board, Coordinates beginCoordinates, Coordinates endCoordinates) {
         int score = 0;
-        int currentPlayerNumOfFields = 0;
-        int oppositePlayerNumOfFields = 0;
+        int positiveNumOfFields = 0;
+        int negativeNumOfFields = 0;
 
         /*
             Integer.compare will return:
@@ -42,7 +42,6 @@ public class ScoreHelper {
          */
         int rowChange = Integer.compare(endCoordinates.getRow(), beginCoordinates.getRow());
         int colChange = Integer.compare(endCoordinates.getCol(), beginCoordinates.getCol());
-        FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
 
         for(int i = beginCoordinates.getRow(), j = beginCoordinates.getCol(); i < 5 && j < 5; i += rowChange, j += colChange) {
             FieldState fieldState = board.getFieldState(i, j);
@@ -50,42 +49,40 @@ public class ScoreHelper {
                 continue;
             }
 
-            if (fieldState == currentPlayerFieldState) {
-                ++currentPlayerNumOfFields;
+            if (fieldState == FieldState.X) {
+                ++positiveNumOfFields;
             } else {
-                ++oppositePlayerNumOfFields;
+                ++negativeNumOfFields;
             }
         }
 
         // Return 0 if at least 1 our mark and 1 enemy's
-        if (currentPlayerNumOfFields > 0 && oppositePlayerNumOfFields > 0) {
+        if (positiveNumOfFields > 0 && negativeNumOfFields > 0) {
             return 0;
         }
 
-        // Each our mark gives +1 point
-        score += currentPlayerNumOfFields;
+        // Each X mark gives +1 point
+        score += positiveNumOfFields;
 
-        // Each enemy mark gives -1 point
-        score -= oppositePlayerNumOfFields;
+        // Each O mark gives -1 point
+        score -= negativeNumOfFields;
 
         return score;
     }
 
-    private static int calculateRowScore(Board board, int rowNum, Player currentPlayer) {
-        return calculateLineScore(board, new Coordinates(rowNum, 0), new Coordinates(rowNum, 4), currentPlayer);
+    private static int calculateRowScore(Board board, int rowNum) {
+        return calculateLineScore(board, new Coordinates(rowNum, 0), new Coordinates(rowNum, 4));
     }
 
-    private static int calculateColScore(Board board, int colNum, Player currentPlayer) {
-        return calculateLineScore(board, new Coordinates(0, colNum), new Coordinates(4, colNum), currentPlayer);
+    private static int calculateColScore(Board board, int colNum) {
+        return calculateLineScore(board, new Coordinates(0, colNum), new Coordinates(4, colNum));
     }
 
     // First diagonal - top left to bottom right
-    private static int calculateFirstDiagonalScore(Board board, Player currentPlayer) {
+    private static int calculateFirstDiagonalScore(Board board) {
         int score = 0;
-        int currentPlayerNumOfFields = 0;
-        int oppositePlayerNumOfFields = 0;
-
-        FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
+        int positiveNumOfFields = 0;
+        int negativeNumOfFields = 0;
 
         for(int i = 0; i < 5 ; i += 1) {
             FieldState fieldState = board.getFieldState(i, i);
@@ -93,34 +90,32 @@ public class ScoreHelper {
                 continue;
             }
 
-            if (fieldState == currentPlayerFieldState) {
-                ++currentPlayerNumOfFields;
+            if (fieldState == FieldState.X) {
+                ++positiveNumOfFields;
             } else {
-                ++oppositePlayerNumOfFields;
+                ++negativeNumOfFields;
             }
         }
 
         // Return 0 if at least 1 our mark and 1 enemy's
-        if (currentPlayerNumOfFields > 0 && oppositePlayerNumOfFields > 0) {
+        if (positiveNumOfFields > 0 && negativeNumOfFields > 0) {
             return 0;
         }
 
-        // Each our mark gives +1 point
-        score += currentPlayerNumOfFields;
+        // Each X mark gives +1 point
+        score += positiveNumOfFields;
 
-        // Each enemy mark gives -1 point
-        score -= oppositePlayerNumOfFields;
+        // Each O mark gives -1 point
+        score -= negativeNumOfFields;
 
         return score;
     }
 
     // First diagonal - top left to bottom right
-    private static int calculateSecondDiagonalScore(Board board, Player currentPlayer) {
+    private static int calculateSecondDiagonalScore(Board board) {
         int score = 0;
-        int currentPlayerNumOfFields = 0;
-        int oppositePlayerNumOfFields = 0;
-
-        FieldState currentPlayerFieldState = currentPlayer.getPlayersMark().toFieldState();
+        int positiveNumOfFields = 0;
+        int negativeNumOfFields = 0;
 
         for(int i = 4; i >= 0 ; i -= 1) {
             FieldState fieldState = board.getFieldState(4-i, i);
@@ -128,23 +123,23 @@ public class ScoreHelper {
                 continue;
             }
 
-            if (fieldState == currentPlayerFieldState) {
-                ++currentPlayerNumOfFields;
+            if (fieldState == FieldState.X) {
+                ++positiveNumOfFields;
             } else {
-                ++oppositePlayerNumOfFields;
+                ++negativeNumOfFields;
             }
         }
 
         // Return 0 if at least 1 our mark and 1 enemy's
-        if (currentPlayerNumOfFields > 0 && oppositePlayerNumOfFields > 0) {
+        if (positiveNumOfFields > 0 && negativeNumOfFields > 0) {
             return 0;
         }
 
-        // Each our mark gives +1 point
-        score += currentPlayerNumOfFields;
+        // Each X mark gives +1 point
+        score += positiveNumOfFields;
 
-        // Each enemy mark gives -1 point
-        score -= oppositePlayerNumOfFields;
+        // Each O mark gives -1 point
+        score -= negativeNumOfFields;
 
         return score;
     }

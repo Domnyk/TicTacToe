@@ -1,4 +1,3 @@
-import helpers.EndGameHelper;
 import helpers.GridHelper;
 import helpers.ScoreHelper;
 import javafx.beans.property.SimpleStringProperty;
@@ -91,13 +90,13 @@ public class Controller {
     }
 
     private void handleGridButtonClicked(Event event) {
-        logger.info("MOVE HAS BEEN MADE");
+        logger.info("Move has been made");
 
         Button source = (Button) event.getSource();
-
         int col = GridPane.getColumnIndex(source);
         int row = GridPane.getRowIndex(source);
         Coordinates coordinates = new Coordinates(row, col);
+        GameState newGameState;
 
         // Update GUI - set mark on proper field
         source.setText(currentPlayer.getPlayersMark().toString());
@@ -109,44 +108,41 @@ public class Controller {
         FieldState newFieldState = FieldState.valueOf(currentPlayer.getPlayersMark().toString());
         board.setFieldState(coordinates, newFieldState);
 
-        // Check for win
-        if (EndGameHelper.hasCurrentPlayerWon(board, coordinates, currentPlayer)) {
+        // Get new GameState
+        newGameState = board.evaluateGameState(currentPlayer, coordinates);
 
-            // Update game status
-            if (gameState == GameState.X_IS_MAKING_MOVE) {
+        switch (newGameState) {
+            case X_WIN:
                 updateGameState(GameState.X_WIN);
                 logger.info("Player X has won");
-            } else {
+                gameGrid.setDisable(true);
+                return;
+            case O_WIN:
                 updateGameState(GameState.O_WIN);
                 logger.info("Player O has won");
-            }
+                gameGrid.setDisable(true);
+                return;
+            case DRAW:
+                updateGameState(GameState.DRAW);
+                logger.info("Draw");
+                return;
+            case X_IS_MAKING_MOVE:
+                updateGameState(GameState.X_IS_MAKING_MOVE);
+                break;
+            case O_IS_MAKING_MOVE:
+                updateGameState(GameState.O_IS_MAKING_MOVE);
+                break;
 
-            // Disable board
-            gameGrid.setDisable(true);
 
-            return;
         }
 
-        // If not win - maybe draw
-        if (EndGameHelper.isDraw(board)) {
-            updateGameState(GameState.DRAW);
-            return;
-        }
-
-        // If not win - show move score
+        // If not end of game - show move score
         logger.info("Player " + currentPlayer.getPlayersMark() + " has made a move in [" + coordinates.getRow() + ", " + coordinates.getCol() + "]");
-        logger.info("Score of a move: " + ScoreHelper.calculateScore(board, currentPlayer));
+        logger.info("Score of a move: " + ScoreHelper.calculateScore(board));
         logger.info("State of board: ");
         GridHelper.printGrid(board);
 
-        // If not win or draw - set newGameStatus
-        if (gameState == GameState.X_IS_MAKING_MOVE) {
-            updateGameState(GameState.O_IS_MAKING_MOVE);
-        } else {
-            updateGameState(GameState.X_IS_MAKING_MOVE);
-        }
-
-        // If not win - change currentPlayer
+        // If not end of game - change currentPlayer
         currentPlayerNumber = (currentPlayerNumber + 1) % 2;
         currentPlayer = players[currentPlayerNumber];
 

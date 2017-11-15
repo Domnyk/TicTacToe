@@ -9,26 +9,10 @@ public class Coordinates  {
         this.col = col;
     }
 
-    /* public Coordinates(Coordinates coordinates) {
-        if (coordinates == null) return;
-
-        this.row = coordinates.getRow();
-        this.col = coordinates.getCol();
-    } */
-
     public Integer getRow() {
         return row;
     }
-
     public Integer getCol() {
         return col;
-    }
-
-    public void setRow(Integer row) {
-        this.row = row;
-    }
-
-    public void setCol(Integer col) {
-        this.col = col;
     }
 }

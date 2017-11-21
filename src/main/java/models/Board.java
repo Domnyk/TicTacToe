@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class Board {
     private FieldState[][] grid;
     private int numOfFieldsTaken;
+    private Coordinates lastMoveCoordinates;
     private static final int numOfFieldsInLine = 5;
     private static final int numOfRows = 5;
     private static final int numOfCols = 5;
@@ -21,12 +22,28 @@ public class Board {
         }
     }
 
-    public int getNumOfFieldsTaken() {
-        return numOfFieldsTaken;
+    public Board(Board board) {
+        grid = new FieldState[numOfRows][numOfCols];
+        numOfFieldsTaken = 0;
+        lastMoveCoordinates = board.getLastMoveCoordinates();
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                grid[i][j] = board.getFieldState(i, j);
+            }
+        }
     }
 
     public FieldState[][] getGrid() {
         return grid;
+    }
+
+    public int getNumOfFieldsTaken() {
+        return numOfFieldsTaken;
+    }
+
+    public Coordinates getLastMoveCoordinates() {
+        return lastMoveCoordinates;
     }
 
     public FieldState getFieldState(int row, int col) {
@@ -37,17 +54,24 @@ public class Board {
         int row = coordinates.getRow();
         int col = coordinates.getCol();
 
+        lastMoveCoordinates = coordinates;
         grid[row][col] = newFieldState;
         ++numOfFieldsTaken;
     }
 
-    public GameState evaluateGameState(Player currentPlayer, Coordinates lastMoveCoordinates) {
+    public GameState evaluateGameState(Player currentPlayer) {
+        GameState continueGameState = currentPlayer.getPlayersMark() == Mark.O ? GameState.X_IS_MAKING_MOVE : GameState.O_IS_MAKING_MOVE;
+
+        // Minimal num of marks on board so that one player could win is 9
+        if (numOfFieldsTaken < 9) {
+            return continueGameState;
+        }
+
         FieldState currentPlayerFieldState = FieldState.valueOf(currentPlayer.getPlayersMark().toString());
+        GameState winGameState = currentPlayer.getPlayersMark() == Mark.O ? GameState.O_WIN : GameState.X_WIN;
         int lastMoveRowLine = lastMoveCoordinates.getRow();
         int lastMoveColLine = lastMoveCoordinates.getCol();
         int sumOfPlayerFields = 0;
-        GameState winGameState = currentPlayer.getPlayersMark() == Mark.O ? GameState.O_WIN : GameState.X_WIN;
-        GameState continueGameState;
 
         // Check vertical line
         for (int i = 0; i < 5; ++i) {
@@ -98,7 +122,6 @@ public class Board {
         }
 
         // At this point game continues
-        continueGameState = currentPlayer.getPlayersMark() == Mark.O ? GameState.X_IS_MAKING_MOVE : GameState.O_IS_MAKING_MOVE;
         return continueGameState;
     }
 

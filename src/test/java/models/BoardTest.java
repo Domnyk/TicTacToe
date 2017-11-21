@@ -10,7 +10,7 @@ public class BoardTest {
     private static final int numOfRows = 5;
 
     @Test
-    public void constructorTest() {
+    public void defaultConstructorTest() {
         Board board = new Board();
 
         for (int i = 0; i < numOfRows; i++) {
@@ -22,6 +22,21 @@ public class BoardTest {
                 assertEquals(FieldState.EMPTY, actualFieldState);
             }
         }
+    }
+
+    @Test
+    public void copyConstructorTest() {
+        Board board1 = new Board();
+        int row1 = 0, col1 = 1, row2 = 4, col2 = 2;
+
+        board1.setFieldState(new Coordinates(row1, col1), FieldState.X);
+        board1.setFieldState(new Coordinates(row2, col2), FieldState.X);
+
+        Board board2 = new Board(board1);
+
+        assertEquals(board1, board2);
+        assertEquals(board1.getFieldState(row1, col1), board2.getFieldState(row1, col1));
+        assertEquals(board1.getFieldState(row2, col2), board2.getFieldState(row2, col2));
     }
 
     @Test
@@ -88,7 +103,6 @@ public class BoardTest {
         Player currentPlayer = new HumanPlayer(Mark.X);
         GameState expectedGameState = GameState.DRAW;
         GameState actualGameState;
-        Coordinates lastMoveCoordinates = new Coordinates(4, 4);
 
         /*
          * This isn't a legal grid setup. It is only for test purpose
@@ -118,7 +132,7 @@ public class BoardTest {
             board.setFieldState(new Coordinates(4, i+1), FieldState.O);
         }
 
-        actualGameState = board.evaluateGameState(currentPlayer, lastMoveCoordinates);
+        actualGameState = board.evaluateGameState(currentPlayer);
 
         assertEquals(expectedGameState, actualGameState);
     }
@@ -129,7 +143,6 @@ public class BoardTest {
         Player currentPlayer = new HumanPlayer(Mark.O);
         GameState expectedGameState = GameState.O_WIN;
         GameState actualGameState;
-        Coordinates lastMoveCoordinates = new Coordinates(4, 4);
 
         /*
          * This isn't a legal grid setup. It is only for test purpose
@@ -140,18 +153,16 @@ public class BoardTest {
          *  E E E O E
          *  X X X X O
          */
-        for (int i = 0; i < numOfRows; i++) {
-            Coordinates coordinates = new Coordinates(i, i);
-            board.setFieldState(coordinates, FieldState.O);
-        }
-
         for (int i = 0; i < (numOfCols - 1); ++i) {
             Coordinates coordinates = new Coordinates(4, i);
             board.setFieldState(coordinates, FieldState.X);
         }
 
-        actualGameState = board.evaluateGameState(currentPlayer, lastMoveCoordinates);
-
+        for (int i = 0; i < numOfRows; i++) {
+            Coordinates coordinates = new Coordinates(i, i);
+            board.setFieldState(coordinates, FieldState.O);
+        }
+        actualGameState = board.evaluateGameState(currentPlayer);
         assertEquals(expectedGameState, actualGameState);
     }
 
@@ -161,7 +172,6 @@ public class BoardTest {
         Player currentPlayer = new HumanPlayer(Mark.X);
         GameState expectedGameState = GameState.X_WIN;
         GameState actualGameState;
-        Coordinates lastMoveCoordinates = new Coordinates(4, 4);
 
         /*
          * This isn't a legal grid setup. It is only for test purpose
@@ -181,7 +191,7 @@ public class BoardTest {
             Coordinates coordinates = new Coordinates(i, 4);
             board.setFieldState(coordinates, FieldState.O);
         }
-        actualGameState = board.evaluateGameState(currentPlayer, lastMoveCoordinates);
+        actualGameState = board.evaluateGameState(currentPlayer);
 
         assertEquals(expectedGameState, actualGameState);
     }
@@ -205,7 +215,7 @@ public class BoardTest {
          */
         board.setFieldState(lastMoveCoordinates, FieldState.O);
 
-        actualGameState = board.evaluateGameState(currentPlayer, lastMoveCoordinates);
+        actualGameState = board.evaluateGameState(currentPlayer);
 
         assertEquals(expectedGameState, actualGameState);
     }
@@ -229,7 +239,7 @@ public class BoardTest {
          */
         board.setFieldState(lastMoveCoordinates, FieldState.X);
 
-        actualGameState = board.evaluateGameState(currentPlayer, lastMoveCoordinates);
+        actualGameState = board.evaluateGameState(currentPlayer);
 
         assertEquals(expectedGameState, actualGameState);
     }

@@ -109,7 +109,7 @@ public class Controller {
         board.setFieldState(coordinates, newFieldState);
 
         // Get new GameState
-        newGameState = board.evaluateGameState(currentPlayer, coordinates);
+        newGameState = board.evaluateGameState(currentPlayer);
 
         switch (newGameState) {
             case X_WIN:

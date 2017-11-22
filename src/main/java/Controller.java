@@ -1,9 +1,11 @@
 import helpers.GridHelper;
 import helpers.ScoreHelper;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -208,13 +210,23 @@ public class Controller {
     }
 
     private void makeAIMove() {
-        ArtificialPlayer artificialPlayer = ((ArtificialPlayer ) currentPlayer);
-        Coordinates aiCoordinates = artificialPlayer.makeMove(board);
-        int row = aiCoordinates.getRow();
-        int col = aiCoordinates.getCol();
+        Runnable makeAIMoveTask = () -> {
+            Platform.runLater(() -> gameGrid.setDisable(true));
 
-        // For some reason getChildren().get(0) is a group element. That's why +1 is needed
-        ((Button)gameGrid.getChildren().get(row*5+col+1)).fire();
+            ArtificialPlayer artificialPlayer = ((ArtificialPlayer ) currentPlayer);
+            Coordinates aiCoordinates = artificialPlayer.makeMove(board);
+            int row = aiCoordinates.getRow();
+            int col = aiCoordinates.getCol();
+
+            Platform.runLater(() -> gameGrid.setDisable(false));
+
+            // For some reason getChildren().get(0) is a group element. That's why +1 is needed
+            Platform.runLater(() -> {
+                ((Button)gameGrid.getChildren().get(row*5+col+1)).fire();
+            });
+        };
+
+        new Thread(makeAIMoveTask).start();
     }
 
     private void startGame() {
@@ -251,6 +263,7 @@ public class Controller {
 
        // If AI moves first we need to make it to move
        if (!currentPlayer.isHuman()) {
+           // Disable grid so that human player can't make a move
            makeAIMove();
        }
     }

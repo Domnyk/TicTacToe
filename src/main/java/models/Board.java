@@ -24,7 +24,7 @@ public class Board {
 
     public Board(Board board) {
         grid = new FieldState[numOfRows][numOfCols];
-        numOfFieldsTaken = 0;
+        numOfFieldsTaken = board.getNumOfFieldsTaken();
         lastMoveCoordinates = board.getLastMoveCoordinates();
 
         for (int i = 0; i < 5; i++) {

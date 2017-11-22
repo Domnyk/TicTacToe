@@ -46,7 +46,7 @@ public class ArtificialPlayerTest {
             }
         }
 
-        Vector<Board> actualPossibleMoves = artificialPlayer.generateMoves(board);
+        Vector<Board> actualPossibleMoves = artificialPlayer.generateMoves(board, Mark.X);
         assertEquals(expectedPossibleMoves, actualPossibleMoves);
     }
 
@@ -124,7 +124,7 @@ public class ArtificialPlayerTest {
         expectedPossibleMoves.add(possibleBoard1);
         expectedPossibleMoves.add(possibleBoard2);
 
-        Vector<Board> actualPossibleMoves = artificialPlayer.generateMoves(board);
+        Vector<Board> actualPossibleMoves = artificialPlayer.generateMoves(board, Mark.X);
         assertEquals(expectedPossibleMoves, actualPossibleMoves);
     }
 }

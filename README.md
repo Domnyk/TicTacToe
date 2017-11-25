@@ -8,8 +8,8 @@ Tic tac toe game on 5x5 board. Written in Java using JavaFX for GUI and minimax 
 Launch commands below from this directory
 #### Windows
     gradlew.bat jfxJar
-    java -jar  ./build/app/TicTacToe.jar
+    java -jar  ./build/jfx/app/TicTacToe.jar
 
 #### Linux & MacOS
     ./gradlew jfxJar
-    java -jar  ./build/app/TicTacToe.jar
+    java -jar  ./build/jfx/app/TicTacToe.jar

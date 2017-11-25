@@ -22,12 +22,4 @@ public enum Mark {
             return FieldState.O;
         }
     }
-
-    /* public Mark getOpositeMark() {
-        if (this.value.equals("X")) {
-            return O;
-        } else {
-            return X;
-        }
-    } */
 }

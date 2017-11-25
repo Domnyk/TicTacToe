@@ -1,26 +1,19 @@
-import helpers.GridHelper;
-import helpers.ScoreHelper;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import models.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
 public class Controller {
     private static int NUM_OF_PLAYERS = 2;
-
-    private static final Logger logger = LogManager.getLogger("Application");
+    private static int NUM_OF_COLS = 5;
+    private static int NUM_OF_ROWS = 5;
+    private static int NUM_OF_MILLISECONDS_IN_SECOND = 1000;
 
     @FXML
     private RadioButton aiVsHumanRadioButton;
@@ -49,6 +42,9 @@ public class Controller {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private TextField delayTextField;
+
     private Player[] players;
 
     private Player currentPlayer;
@@ -57,9 +53,9 @@ public class Controller {
 
     private Board board;
 
-    private GameState gameState;
-
     private boolean isHumanVsAIGameType;
+
+    private int sleepAmount;
 
     private StringProperty statusLabelProperty = new SimpleStringProperty();
 
@@ -71,20 +67,20 @@ public class Controller {
     @FXML
     private void initialize() {
         statusLabel.textProperty().bind(statusLabelProperty);
+        delayTextField.setText("0");
         addBtns();
 
         updateGameState(GameState.WAITING_FOR_GAME_START);
     }
 
     private void updateGameState(GameState newGameState) {
-        gameState = newGameState;
         setStatusLabelProperty(newGameState.toString());
     }
 
     // Add button to each cell in gridPane
     private void addBtns() {
-        for(int row = 0; row < 5; ++row) {
-            for(int col = 0; col < 5; ++col) {
+        for(int row = 0; row < NUM_OF_ROWS; ++row) {
+            for(int col = 0; col < NUM_OF_COLS; ++col) {
                 Button btn = createGridBtn();
                 gameGrid.add(btn, col, row);
             }
@@ -92,8 +88,6 @@ public class Controller {
     }
 
     private void handleGridButtonClicked(Event event) {
-        logger.info("Move has been made");
-
         Button source = (Button) event.getSource();
         int col = GridPane.getColumnIndex(source);
         int row = GridPane.getRowIndex(source);
@@ -116,17 +110,14 @@ public class Controller {
         switch (newGameState) {
             case X_WIN:
                 updateGameState(GameState.X_WIN);
-                logger.info("Player X has won");
                 gameGrid.setDisable(true);
                 return;
             case O_WIN:
                 updateGameState(GameState.O_WIN);
-                logger.info("Player O has won");
                 gameGrid.setDisable(true);
                 return;
             case DRAW:
                 updateGameState(GameState.DRAW);
-                logger.info("Draw");
                 return;
             case X_IS_MAKING_MOVE:
                 updateGameState(GameState.X_IS_MAKING_MOVE);
@@ -137,15 +128,8 @@ public class Controller {
 
 
         }
-
-        // If not end of game - show move score
-        logger.info("Player " + currentPlayer.getPlayersMark() + " has made a move in [" + coordinates.getRow() + ", " + coordinates.getCol() + "]");
-        logger.info("Score of a move: " + ScoreHelper.calculateScore(board));
-        logger.info("State of board: ");
-        GridHelper.printGrid(board);
-
         // If not end of game - change currentPlayer
-        currentPlayerNumber = (currentPlayerNumber + 1) % 2;
+        currentPlayerNumber = (currentPlayerNumber + 1) % NUM_OF_PLAYERS;
         currentPlayer = players[currentPlayerNumber];
 
         // If new current player is AI - make his move
@@ -196,7 +180,6 @@ public class Controller {
         isHumanVsAIGameType = aiVsHumanRadioButton.isSelected();
 
         startGame();
-        logger.info("Game has been started");
     }
 
     private void disableAllControls() {
@@ -207,11 +190,18 @@ public class Controller {
         firstAiTreeDepthTextField.setDisable(true);
         secondAiTreeDepthLabel.setDisable(true);
         secondAiTreeDepthTextField.setDisable(true);
+        delayTextField.setDisable(true);
     }
 
     private void makeAIMove() {
         Runnable makeAIMoveTask = () -> {
             Platform.runLater(() -> gameGrid.setDisable(true));
+
+            try {
+                Thread.sleep(sleepAmount * NUM_OF_MILLISECONDS_IN_SECOND);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
             ArtificialPlayer artificialPlayer = ((ArtificialPlayer ) currentPlayer);
             Coordinates aiCoordinates = artificialPlayer.makeMove(board);
@@ -222,11 +212,14 @@ public class Controller {
 
             // For some reason getChildren().get(0) is a group element. That's why +1 is needed
             Platform.runLater(() -> {
-                ((Button)gameGrid.getChildren().get(row*5+col+1)).fire();
+                int buttonNumber = row * NUM_OF_ROWS + col + 1;
+                ((Button)gameGrid.getChildren().get(buttonNumber)).fire();
             });
         };
 
-        new Thread(makeAIMoveTask).start();
+        Thread aiThread = new Thread(makeAIMoveTask);
+        aiThread.setDaemon(true);
+        aiThread.start();
     }
 
     private void startGame() {
@@ -235,6 +228,9 @@ public class Controller {
 
        // Create players' models
        players = new Player[NUM_OF_PLAYERS];
+
+       // Get sleepAmount value
+       sleepAmount = Integer.parseInt(delayTextField.getText());
 
        if ( isHumanVsAIGameType ) {
            int firstAiTreeDepth = Integer.parseInt(firstAiTreeDepthTextField.getText());
@@ -263,7 +259,6 @@ public class Controller {
 
        // If AI moves first we need to make it to move
        if (!currentPlayer.isHuman()) {
-           // Disable grid so that human player can't make a move
            makeAIMove();
        }
     }

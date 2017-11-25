@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="INFO">
     <Appenders>
-        <File name="FileAppender" fileName="Application.log">
+        <File name="FileAppender" fileName="application.log">
             <PatternLayout pattern="%date{HH:mm:ss} [%threadName] %-5level - %msg%n"/>
         </File>
         <Console name="ConsoleAppender">
@@ -9,12 +9,12 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="info">
-            <AppenderRef ref="FileAppender"/>
+        <Root level="debug">
         </Root>
 
         <Logger name="Application" level="info">
-            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
         </Logger>
+
     </Loggers>
 </Configuration>

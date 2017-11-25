@@ -3,7 +3,6 @@ package helpers;
 import models.Board;
 import models.Coordinates;
 import models.FieldState;
-import models.Player;
 
 public class ScoreHelper {
     public static int calculateScore(Board board) {
@@ -64,8 +63,11 @@ public class ScoreHelper {
         // Each X mark gives +1 point
         score += positiveNumOfFields;
 
+        if (positiveNumOfFields == 5 ) { score += 100; }
+
         // Each O mark gives -1 point
         score -= negativeNumOfFields;
+        if (negativeNumOfFields == 5 ) { score -= 100; }
 
         return score;
     }

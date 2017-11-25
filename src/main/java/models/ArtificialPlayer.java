@@ -1,22 +1,17 @@
 package models;
 
-import helpers.GridHelper;
 import helpers.ScoreHelper;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Vector;
 
 public class ArtificialPlayer extends Player implements ArtificialIntelligence {
     private int aiTreeDepth;
-    private static final int numOfRows = 5;
-    private static final int numOfCols = 5;
-    private static final Logger logger = LogManager.getLogger("Application");
+    private static final int NUM_OF_ROWS = 5;
+    private static final int NUM_OF_COLS = 5;
+    private static final int ALPHA_INIT_VALUE = -100;
+    private static final int BETA_INIT_VALUE = 100;
 
     public ArtificialPlayer(Mark playersMark, int aiTreeDepth) {
         super(playersMark);
-
         this.aiTreeDepth = aiTreeDepth;
     }
 
@@ -29,8 +24,8 @@ public class ArtificialPlayer extends Player implements ArtificialIntelligence {
     public Vector<Board> generateMoves(Board board, Mark playersMark) {
         Vector<Board> possibleMoves = new Vector<>();
 
-        for (int i = 0; i < numOfRows; i++) {
-            for (int j = 0; j < numOfCols; j++) {
+        for (int i = 0; i < NUM_OF_ROWS; i++) {
+            for (int j = 0; j < NUM_OF_COLS; j++) {
                 FieldState fieldState = board.getFieldState(i, j);
                 if (fieldState != FieldState.EMPTY) {
                     continue;
@@ -56,44 +51,47 @@ public class ArtificialPlayer extends Player implements ArtificialIntelligence {
             return board;
         }
 
-        Vector<Board> possibleBoards = generateMoves(board, isMaximazingPlayer ? Mark.X : Mark.O);
-        int index = 0;
+        Vector<Board> possibleMoves = generateMoves(board, isMaximazingPlayer ? Mark.X : Mark.O);
+        int indexOfBestMove = 0;
+
 
         if (isMaximazingPlayer) {
-            int bestScore = -100;
-            for (int i = 0; i < possibleBoards.size(); ++i) {
-                Board tmpBoard = alphaBeta(possibleBoards.elementAt(i), aiTreeDepth - 1, alpha, beta, false);
+            for (int i = 0; i < possibleMoves.size(); ++i) {
+                Board newMove = alphaBeta(possibleMoves.elementAt(i), aiTreeDepth - 1, alpha, beta, false);
+                int newMoveScore = ScoreHelper.calculateScore(newMove);
 
-                bestScore = Math.max(bestScore, ScoreHelper.calculateScore(tmpBoard));
-                index = (bestScore == ScoreHelper.calculateScore(tmpBoard)) ? i : index;
+                if ( newMoveScore > alpha ) {
+                    alpha = newMoveScore;
+                    indexOfBestMove = i;
+                }
 
-                alpha = Math.max(alpha, bestScore);
                 if (beta <= alpha) {
                     break;
                 }
             }
 
-            return possibleBoards.elementAt(index);
+            return possibleMoves.elementAt(indexOfBestMove);
         } else {
-            int bestScore = 100;
-            for (int i = 0; i < possibleBoards.size(); ++i) {
-                Board tmpBoard = alphaBeta(possibleBoards.elementAt(i), aiTreeDepth - 1, alpha, beta, true);
+            for (int i = 0; i < possibleMoves.size(); ++i) {
+                Board newMove = alphaBeta(possibleMoves.elementAt(i), aiTreeDepth - 1, alpha, beta, true);
+                int newMoveScore = ScoreHelper.calculateScore(newMove);
 
-                bestScore = Math.min(bestScore, ScoreHelper.calculateScore(tmpBoard));
-                index = (bestScore == ScoreHelper.calculateScore(tmpBoard)) ? i : index;
+                if ( newMoveScore < beta ) {
+                    beta = newMoveScore;
+                    indexOfBestMove = i;
+                }
 
-                beta = Math.min(beta, bestScore);
                 if (beta <= alpha) {
                     break;
                 }
             }
-            return possibleBoards.elementAt(index);
+            return possibleMoves.elementAt(indexOfBestMove);
         }
     }
 
     @Override
     public Coordinates makeMove(Board board) {
-        Board bestMove = alphaBeta(board, aiTreeDepth, -100, 100, getPlayersMark() == Mark.X);
+        Board bestMove = alphaBeta(board, aiTreeDepth, ALPHA_INIT_VALUE, BETA_INIT_VALUE, getPlayersMark() == Mark.X);
 
         return bestMove.getLastMoveCoordinates();
     }

@@ -6,29 +6,30 @@ public class Board {
     private FieldState[][] grid;
     private int numOfFieldsTaken;
     private Coordinates lastMoveCoordinates;
-    private static final int numOfFieldsInLine = 5;
-    private static final int numOfRows = 5;
-    private static final int numOfCols = 5;
-    private static final int numOfFields = numOfRows * numOfCols;
+    private static final int NUM_OF_FIELDS_IN_LINE = 5;
+    private static final int NUM_OF_ROWS = 5;
+    private static final int NUM_OF_COLS = 5;
+    private static final int NUM_OF_FIELDS = NUM_OF_ROWS * NUM_OF_COLS;
+    private static final int MIN_NUM_OF_FIELDS_TAKEN_REQUIRE_TO_WIN = 9;
 
     public Board() {
-        grid = new FieldState[numOfRows][numOfCols];
+        grid = new FieldState[NUM_OF_ROWS][NUM_OF_COLS];
         numOfFieldsTaken = 0;
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < NUM_OF_ROWS; i++) {
+            for (int j = 0; j < NUM_OF_COLS; j++) {
                 grid[i][j] = FieldState.EMPTY;
             }
         }
     }
 
     public Board(Board board) {
-        grid = new FieldState[numOfRows][numOfCols];
+        grid = new FieldState[NUM_OF_ROWS][NUM_OF_COLS];
         numOfFieldsTaken = board.getNumOfFieldsTaken();
         lastMoveCoordinates = board.getLastMoveCoordinates();
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < NUM_OF_ROWS; i++) {
+            for (int j = 0; j < NUM_OF_COLS; j++) {
                 grid[i][j] = board.getFieldState(i, j);
             }
         }
@@ -59,11 +60,12 @@ public class Board {
         ++numOfFieldsTaken;
     }
 
+
     public GameState evaluateGameState(Player currentPlayer) {
         GameState continueGameState = currentPlayer.getPlayersMark() == Mark.O ? GameState.X_IS_MAKING_MOVE : GameState.O_IS_MAKING_MOVE;
 
         // Minimal num of marks on board so that one player could win is 9
-        if (numOfFieldsTaken < 9) {
+        if (numOfFieldsTaken < MIN_NUM_OF_FIELDS_TAKEN_REQUIRE_TO_WIN) {
             return continueGameState;
         }
 
@@ -74,7 +76,7 @@ public class Board {
         int sumOfPlayerFields = 0;
 
         // Check vertical line
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < NUM_OF_FIELDS_IN_LINE; ++i) {
             if (this.getFieldState(i, lastMoveColLine) == currentPlayerFieldState) {
                 ++sumOfPlayerFields;
             }
@@ -85,7 +87,7 @@ public class Board {
 
         sumOfPlayerFields = 0;
         // Check horizontal line
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < NUM_OF_FIELDS_IN_LINE; ++i) {
             if (getFieldState(lastMoveRowLine, i) == currentPlayerFieldState) {
                 ++sumOfPlayerFields;
             }
@@ -96,7 +98,7 @@ public class Board {
 
         sumOfPlayerFields = 0;
         // Check 1st diagonal
-        for(int i = 0; i < 5; ++i) {
+        for(int i = 0; i < NUM_OF_FIELDS_IN_LINE; ++i) {
             if (this.getFieldState(i, i) == currentPlayerFieldState) {
                 ++sumOfPlayerFields;
             }
@@ -107,7 +109,7 @@ public class Board {
 
         sumOfPlayerFields = 0;
         // Check 2nd diagonal
-        for(int i = 0; i < 5; ++i) {
+        for(int i = 0; i < NUM_OF_FIELDS_IN_LINE; ++i) {
             if (this.getFieldState(4-i, i) == currentPlayerFieldState) {
                 ++sumOfPlayerFields;
             }
@@ -117,7 +119,7 @@ public class Board {
         }
 
         // At this point it can be either draw or game continues
-        if (numOfFieldsTaken == numOfFields) {
+        if (numOfFieldsTaken == NUM_OF_FIELDS) {
             return GameState.DRAW;
         }
 
@@ -126,7 +128,7 @@ public class Board {
     }
 
     private boolean isWin(int sumOfPlayerFields) {
-        return sumOfPlayerFields == numOfFieldsInLine;
+        return sumOfPlayerFields == NUM_OF_FIELDS_IN_LINE;
     }
 
     @Override

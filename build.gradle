@@ -30,5 +30,4 @@ dependencies {
 jfx {
     mainClass = 'Main'
     jfxMainAppJarName = 'TicTacToe.jar'
-    jfxAppOutputDir = './build/app'
 }

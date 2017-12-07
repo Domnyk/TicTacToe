@@ -3,6 +3,8 @@
 ### Description
 Tic tac toe game on 5x5 board. Written in Java using JavaFX for GUI and minimax algorithm with alpha beta pruning for computer moves
 
+### Requirements
+* JDK >= 1.8
   
 ### How to build
 Launch commands below from this directory

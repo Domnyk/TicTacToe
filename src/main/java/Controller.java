@@ -74,6 +74,11 @@ public class Controller {
     }
 
     private void updateGameState(GameState newGameState) {
+        // Mark O is reserved for human player
+        if (newGameState == GameState.O_IS_MAKING_MOVE) {
+            setStatusLabelProperty("Make move");
+            return;
+        }
         setStatusLabelProperty(newGameState.toString());
     }
 

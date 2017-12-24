@@ -18,11 +18,10 @@ public class ScoreHelper {
             score += calculateColScore(board, i);
         }
 
-        // First diagonal
-        score += calculateFirstDiagonalScore(board);
-
-        // Second diagonal
-        score += calculateSecondDiagonalScore(board);
+        Coordinates[] winLineCoordinates = diagonalLinesHelper.getDiagonalLinesCoordinates();
+        for (int i = 0, size = winLineCoordinates.length; i < size; i += 2) {
+            score += calculateLineScore(board, winLineCoordinates[i], winLineCoordinates[i+1]);
+        }
 
         return score;
     }
@@ -42,7 +41,8 @@ public class ScoreHelper {
         int rowChange = Integer.compare(endCoordinates.getRow(), beginCoordinates.getRow());
         int colChange = Integer.compare(endCoordinates.getCol(), beginCoordinates.getCol());
 
-        for(int i = beginCoordinates.getRow(), j = beginCoordinates.getCol(); i < 5 && j < 5; i += rowChange, j += colChange) {
+        for(int i = beginCoordinates.getRow(), j = beginCoordinates.getCol();
+            i != (endCoordinates.getRow() + rowChange) || j != (endCoordinates.getCol() + colChange); i += rowChange, j += colChange) {
             FieldState fieldState = board.getFieldState(i, j);
             if (fieldState == FieldState.EMPTY) {
                 continue;
@@ -63,11 +63,8 @@ public class ScoreHelper {
         // Each X mark gives +1 point
         score += positiveNumOfFields;
 
-        if (positiveNumOfFields == 5 ) { score += 100; }
-
         // Each O mark gives -1 point
         score -= negativeNumOfFields;
-        if (negativeNumOfFields == 5 ) { score -= 100; }
 
         return score;
     }
